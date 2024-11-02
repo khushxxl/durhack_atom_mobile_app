@@ -12,6 +12,7 @@ import * as DocumentPicker from "expo-document-picker";
 import { Audio } from "expo-av";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 
 const { width } = Dimensions.get("window");
 
@@ -39,13 +40,12 @@ const EnterTicketDetails = () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
         type: "audio/*",
-        copyToCacheDirectory: true, // This ensures the file is accessible
+        copyToCacheDirectory: true,
       });
 
       if (result.assets && result.assets.length > 0) {
         const asset = result.assets[0];
         setAudioFile(asset);
-        // Load the audio file
         try {
           const { sound: audioSound } = await Audio.Sound.createAsync(
             { uri: asset.uri },
@@ -87,12 +87,10 @@ const EnterTicketDetails = () => {
 
   const router = useRouter();
   const handleSubmit = () => {
-    // Add submit logic here
     router.back();
     console.log("Submitting:", { targetName, audioFile });
   };
 
-  // Cleanup sound when component unmounts
   useEffect(() => {
     return () => {
       if (sound) {
@@ -102,54 +100,71 @@ const EnterTicketDetails = () => {
   }, [sound]);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.popupContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter target name"
-          value={targetName}
-          onChangeText={setTargetName}
-          placeholderTextColor="#667085"
-        />
+    <View style={styles.mainContainer}>
+      {!audioFile ? (
+        <TouchableOpacity
+          style={styles.uploadContainer}
+          onPress={pickAudio}
+        >
+          <LinearGradient
+            colors={["#FFFFFF", "#FFFFFF"]}
+            style={styles.uploadGradient}
+          >
+            <MaterialIcons name="upload-file" size={40} color="#000000" />
+            <Text style={styles.uploadText}>Upload Audio File</Text>
+            <View style={styles.dottedBorder} />
+          </LinearGradient>
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.audioPlayerContainer}>
+          <View style={styles.audioInfoContainer}>
+            <Text style={styles.fileName} numberOfLines={1}>
+              {audioFile.name}
+            </Text>
+            <TouchableOpacity
+              style={styles.removeButton}
+              onPress={handleRemoveAudio}
+            >
+              <MaterialIcons name="close" size={24} color="#FF4444" />
+            </TouchableOpacity>
+          </View>
 
-        {!audioFile ? (
-          <TouchableOpacity style={styles.uploadContainer} onPress={pickAudio}>
-            <MaterialIcons name="upload-file" size={24} color="#007AFF" />
-            <Text style={styles.uploadText}>Upload Audio</Text>
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.audioPlayerContainer}>
-            <View style={styles.audioInfoContainer}>
-              <Text style={styles.fileName} numberOfLines={1}>
-                {audioFile.name}
-              </Text>
-              <TouchableOpacity
-                style={styles.removeButton}
-                onPress={handleRemoveAudio}
-              >
-                <MaterialIcons name="close" size={20} color="#FF3B30" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.controlsContainer}>
-              <TouchableOpacity
-                style={styles.playButton}
-                onPress={handlePlayPause}
+          <View style={styles.controlsContainer}>
+            <TouchableOpacity
+              style={styles.playButton}
+              onPress={handlePlayPause}
+            >
+              <LinearGradient
+                colors={["#00ff88", "#00cc88"]}
+                style={styles.playButtonGradient}
               >
                 <MaterialIcons
                   name={isPlaying ? "pause" : "play-arrow"}
-                  size={24}
-                  color="#007AFF"
+                  size={36}
+                  color="#000000"
                 />
-              </TouchableOpacity>
-            </View>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
-        )}
+        </View>
+      )}
 
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter target name"
+        value={targetName}
+        onChangeText={setTargetName}
+        placeholderTextColor="#666666"
+      />
+
+      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+        <LinearGradient
+          colors={["#000000", "#000000"]}
+          style={styles.submitGradient}
+        >
           <Text style={styles.submitButtonText}>Submit</Text>
-        </TouchableOpacity>
-      </View>
+        </LinearGradient>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -158,88 +173,135 @@ export default EnterTicketDetails;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
     justifyContent: "center",
     alignItems: "center",
   },
-  popupContainer: {
-    width: width * 0.8, // 80% of screen width
-    maxWidth: 300, // Maximum width
+  mainContainer: {
+    gap: 24,
+    alignSelf: "center",
     backgroundColor: "white",
-    borderRadius: 8, // Changed to square corners
-    padding: 15,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#D0D5DD",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 15,
-    fontSize: 16,
+    flex: 1,
+    width: "100%",
+    padding: 24,
+    height: "100%",
   },
   uploadContainer: {
-    padding: 15,
+    borderRadius: 20,
+    overflow: "hidden",
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    position: "relative",
+  },
+  uploadGradient: {
+    padding: 80,
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "row",
-    gap: 10,
-    borderWidth: 1,
-    borderColor: "#D0D5DD",
-    borderRadius: 8,
+    flexDirection: "column",
+    gap: 16,
+  },
+  dottedBorder: {
+    position: "absolute",
+    top: 8,
+    left: 8,
+    right: 8,
+    bottom: 8,
+    borderWidth: 2,
+    borderStyle: "dashed",
+    borderColor: "#CCCCCC",
+    borderRadius: 16,
   },
   uploadText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#007AFF",
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#000000",
+    letterSpacing: 0.5,
+    zIndex: 1,
   },
   audioPlayerContainer: {
-    padding: 10,
+    padding: 20,
+    backgroundColor: "rgba(30, 30, 30, 0.9)",
+    borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#D0D5DD",
-    borderRadius: 8,
+    borderColor: "#333333",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   audioInfoContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 8,
+    marginBottom: 16,
   },
   fileName: {
-    fontSize: 14,
-    color: "#333",
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#FFFFFF",
     flex: 1,
-    marginRight: 10,
+    marginRight: 12,
   },
   removeButton: {
-    padding: 4,
+    padding: 10,
+    backgroundColor: "rgba(255, 68, 68, 0.1)",
+    borderRadius: 14,
   },
   controlsContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   playButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 8, // Changed to square corners
-    backgroundColor: "#F0F0F0",
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    overflow: "hidden",
+  },
+  playButtonGradient: {
+    width: "100%",
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  input: {
+    borderWidth: 2,
+    borderColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 18,
+    fontSize: 17,
+    backgroundColor: "#FFFFFF",
+    color: "#333333",
+    fontWeight: "500",
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  submitButton: {
+    width: "100%",
+    alignSelf: "center",
+    borderRadius: 16,
+    overflow: "hidden",
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  submitGradient: {
+    paddingVertical: 18,
+    alignItems: "center",
+  },
+  submitButtonText: {
+    color: "#FFFFFF",
+    fontSize: 20,
+    fontWeight: "700",
+    letterSpacing: 0.5,
   },
 });
