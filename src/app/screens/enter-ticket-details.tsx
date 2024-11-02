@@ -3,8 +3,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Platform,
-  Dimensions,
   TextInput,
 } from "react-native";
 import React, { useState, useEffect } from "react";
@@ -14,15 +12,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 
-const { width } = Dimensions.get("window");
-
 const EnterTicketDetails = () => {
   const [audioFile, setAudioFile] = useState(null);
   const [sound, setSound] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [targetName, setTargetName] = useState("");
+  const [description, setDescription] = useState(""); // Added description state
 
-  // Request audio permissions on component mount
   useEffect(() => {
     (async () => {
       await Audio.requestPermissionsAsync();
@@ -61,34 +56,25 @@ const EnterTicketDetails = () => {
     }
   };
 
-  const handlePlayPause = async () => {
-    if (sound) {
-      try {
-        if (isPlaying) {
-          await sound.pauseAsync();
-        } else {
-          await sound.playAsync();
-        }
-        setIsPlaying(!isPlaying);
-      } catch (error) {
-        console.log("Error playing/pausing audio:", error);
-      }
-    }
-  };
-
   const handleRemoveAudio = async () => {
     if (sound) {
       await sound.unloadAsync();
     }
     setSound(null);
     setAudioFile(null);
-    setIsPlaying(false);
   };
+
+  const [error, setError] = useState(null);
+
+  
 
   const router = useRouter();
   const handleSubmit = () => {
+    if(!targetName || !description){
+      return;
+    }
     router.back();
-    console.log("Submitting:", { targetName, audioFile });
+    console.log("Submitting:", { targetName, description, audioFile });
   };
 
   useEffect(() => {
@@ -113,45 +99,57 @@ const EnterTicketDetails = () => {
           </LinearGradient>
         </TouchableOpacity>
       ) : (
-        <View style={styles.audioPlayerContainer}>
-          <View style={styles.audioInfoContainer}>
-            <Text style={styles.fileName} numberOfLines={1}>
-              {audioFile.name}
-            </Text>
-            <TouchableOpacity
-              style={styles.removeButton}
-              onPress={handleRemoveAudio}
-            >
-              <MaterialIcons name="close" size={24} color="#FF4444" />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.controlsContainer}>
-            <TouchableOpacity
-              style={styles.playButton}
-              onPress={handlePlayPause}
-            >
-              <LinearGradient
-                colors={["#00ff88", "#00cc88"]}
-                style={styles.playButtonGradient}
+        <View style={styles.uploadContainer}>
+          <LinearGradient
+            colors={["#FFFFFF", "#FFFFFF"]}
+            style={styles.uploadGradient}
+          >
+            <View style={styles.dottedBorder} />
+            <View style={styles.audioInfoContainer}>
+              <MaterialIcons
+                name="audiotrack"
+                size={24}
+                color="#4a90e2"
+                style={styles.audioIcon}
+              />
+              <View style={styles.fileInfoWrapper}>
+                <Text style={styles.fileName} numberOfLines={1}>
+                  {audioFile.name}
+                </Text>
+                <Text style={styles.fileSize}>
+                  {(audioFile.size / (1024 * 1024)).toFixed(2)} MB
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={handleRemoveAudio}
               >
                 <MaterialIcons
-                  name={isPlaying ? "pause" : "play-arrow"}
-                  size={36}
-                  color="#000000"
+                  name="delete-outline"
+                  size={24}
+                  color="#dc3545"
                 />
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
         </View>
       )}
 
       <TextInput
         style={styles.input}
-        placeholder="Enter target name"
+        placeholder="Enter Ticket name"
         value={targetName}
         onChangeText={setTargetName}
         placeholderTextColor="#666666"
+      />
+
+      <TextInput // Added description input
+        style={styles.input}
+        placeholder="Enter Description"
+        value={description}
+        onChangeText={setDescription}
+        placeholderTextColor="#666666"
+        multiline={true}
       />
 
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
@@ -169,10 +167,6 @@ const EnterTicketDetails = () => {
 export default EnterTicketDetails;
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
   mainContainer: {
     gap: 24,
     alignSelf: "center",
@@ -186,14 +180,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     elevation: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
+
+
     shadowOpacity: 0.2,
     shadowRadius: 5,
     position: "relative",
   },
   uploadGradient: {
-    padding: 80,
+    height: 200,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
@@ -217,53 +211,32 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     zIndex: 1,
   },
-  audioPlayerContainer: {
-    padding: 20,
-    backgroundColor: "rgba(30, 30, 30, 0.9)",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#333333",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
-  },
   audioInfoContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
+    gap: 12,
+    width: "100%",
+    paddingHorizontal: 20,
+  },
+  audioIcon: {
+    marginRight: 8,
+  },
+  fileInfoWrapper: {
+    flex: 1,
   },
   fileName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
-    color: "#FFFFFF",
-    flex: 1,
-    marginRight: 12,
+  },
+  fileSize: {
+    fontSize: 12,
+    color: "#666666",
+    marginTop: 2,
   },
   removeButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 68, 68, 0.1)",
-    borderRadius: 14,
-  },
-  controlsContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 12,
-  },
-  playButton: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    overflow: "hidden",
-  },
-  playButtonGradient: {
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: "#ffebee",
   },
   input: {
     borderWidth: 2,
