@@ -1,3 +1,4 @@
+import CustomButton from "@/ui/CustomButton";
 import CustomText from "@/ui/CustomText";
 import { Link, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -22,14 +23,10 @@ export default function Page() {
         <CustomText className="font-poppins-bold text-3xl text-center">
           be a part of finance{"\n"}revolutionary
         </CustomText>
-        <TouchableOpacity
+        <CustomButton
           onPress={() => router.push("screens/view-tickets")}
-          className="p-4 rounded-full bg-black mt-10 "
-        >
-          <CustomText className="text-white text-center text-xl font-poppins-semibold">
-            Get Started
-          </CustomText>
-        </TouchableOpacity>
+          buttonText="Get Started"
+        />
       </Animated.View>
     </View>
   );
