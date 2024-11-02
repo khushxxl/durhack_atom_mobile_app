@@ -16,6 +16,7 @@ const EnterTicketDetails = () => {
   const [audioFile, setAudioFile] = useState(null);
   const [sound, setSound] = useState(null);
   const [targetName, setTargetName] = useState("");
+  const [description, setDescription] = useState(""); // Added description state
 
   useEffect(() => {
     (async () => {
@@ -69,11 +70,11 @@ const EnterTicketDetails = () => {
 
   const router = useRouter();
   const handleSubmit = () => {
-    if(!targetName){
+    if(!targetName || !description){
       return;
     }
     router.back();
-    console.log("Submitting:", { targetName, audioFile });
+    console.log("Submitting:", { targetName, description, audioFile });
   };
 
   useEffect(() => {
@@ -140,6 +141,15 @@ const EnterTicketDetails = () => {
         value={targetName}
         onChangeText={setTargetName}
         placeholderTextColor="#666666"
+      />
+
+      <TextInput // Added description input
+        style={styles.input}
+        placeholder="Enter Description"
+        value={description}
+        onChangeText={setDescription}
+        placeholderTextColor="#666666"
+        multiline={true}
       />
 
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
