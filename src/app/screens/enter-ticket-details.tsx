@@ -102,10 +102,7 @@ const EnterTicketDetails = () => {
   return (
     <View style={styles.mainContainer}>
       {!audioFile ? (
-        <TouchableOpacity
-          style={styles.uploadContainer}
-          onPress={pickAudio}
-        >
+        <TouchableOpacity style={styles.uploadContainer} onPress={pickAudio}>
           <LinearGradient
             colors={["#FFFFFF", "#FFFFFF"]}
             style={styles.uploadGradient}
