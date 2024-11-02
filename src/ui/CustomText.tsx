@@ -12,7 +12,11 @@ import {
   Poppins_900Black_Italic,
 } from "@expo-google-fonts/poppins";
 
-const CustomText = ({ className = "", style = {} as any, ...props }) => {
+const CustomText = ({
+  className = "text-black ",
+  style = {} as any,
+  ...props
+}) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_600SemiBold,
@@ -47,7 +51,7 @@ const CustomText = ({ className = "", style = {} as any, ...props }) => {
 
   return (
     <RNText
-      className={`text-black ${className}`}
+      className={`${className}`}
       style={[
         {
           fontFamily,
