@@ -47,7 +47,7 @@ const CustomText = ({ className = "", style = {} as any, ...props }) => {
 
   return (
     <RNText
-      className={`text-white ${className}`}
+      className={`text-black ${className}`}
       style={[
         {
           fontFamily,
