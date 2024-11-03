@@ -16,16 +16,15 @@ import { sampleTickets } from "utils/constants";
 
 const ViewTickers = () => {
   const router = useRouter();
-
-  const TicketComponent = ({ name, description }) => {
+  const TicketComponent = ({ data }) => {
     return (
       <View className="p-4 border border-gray-400 mx-3 rounded-xl mt-10">
         <CustomText className="font-poppins-semibold text-lg">
-          <View className="h-5 w-5 bg-blue-200 rounded-full mr-2" /> {name}
+          <View className="h-5 w-5 bg-blue-200 rounded-full mr-2" /> {data.name}
         </CustomText>
-        <CustomText className="text-lg mt-3">{description}</CustomText>
+        <CustomText className="text-lg mt-3">{data.description}</CustomText>
         <CustomButton
-          onPress={() => {}}
+          onPress={() => router.push("/screens/view-report")}
           buttonText="View Report"
           additionalClassName="max-w-[200px] text-sm rounded-lg p-3"
         />
@@ -48,11 +47,7 @@ const ViewTickers = () => {
 
       <ScrollView className="mt-5 gap-y-5">
         {sampleTickets.map((ticket) => (
-          <TicketComponent
-            key={ticket.id}
-            name={ticket.name}
-            description={ticket.description}
-          />
+          <TicketComponent key={ticket.id} data={ticket} />
         ))}
       </ScrollView>
 

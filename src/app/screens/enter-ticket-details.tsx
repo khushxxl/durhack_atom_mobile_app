@@ -66,14 +66,29 @@ const EnterTicketDetails = () => {
 
   const [error, setError] = useState(null);
 
-  
-
   const router = useRouter();
-  const handleSubmit = () => {
-    if(!targetName || !description){
-      return;
-    }
-    router.back();
+  const handleSubmit = async () => {
+    await fetch("http://localhost:8000/deepgram", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+
+      body: JSON.stringify({
+        url: "https://drive.google.com/uc?export=download&id=1Z5XwKQ3G78kPND6Lw4vF9LOc1SRudFwQ",
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+        router.back();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setError("Failed to submit. Please try again.");
+      });
+
     console.log("Submitting:", { targetName, description, audioFile });
   };
 
@@ -180,7 +195,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     elevation: 8,
-
 
     shadowOpacity: 0.2,
     shadowRadius: 5,
