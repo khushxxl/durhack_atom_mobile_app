@@ -13,6 +13,7 @@ export default function Layout() {
           name="screens/enter-ticket-details"
           options={{ presentation: "modal" }}
         />
+        <Stack.Screen name="screens/view-report" />
       </Stack>
     </AppProvider>
   );
