@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import * as DocumentPicker from "expo-document-picker";
@@ -81,7 +82,7 @@ const EnterTicketDetails = () => {
         "Access-Control-Allow-Origin": "*",
       },
       body: JSON.stringify({
-        url: "https://drive.google.com/uc?export=download&id=1Z5XwKQ3G78kPND6Lw4vF9LOc1SRudFwQ",
+        url: "https://drive.google.com/uc?export=download&id=1UEwtA0XjWe_hMAZ_MeJF7Cw8GyDP7yNO",
       }),
     })
       .then(async (response) => {
@@ -100,6 +101,8 @@ const EnterTicketDetails = () => {
               ticketName: targetName,
               ticketDescription: description,
               data: aiResponse,
+              audioURL:
+                "https://drive.google.com/uc?export=download&id=1UEwtA0XjWe_hMAZ_MeJF7Cw8GyDP7yNO",
             };
             setallTickets([...allTickets, newTicket]);
             router.back();
@@ -211,6 +214,7 @@ const EnterTicketDetails = () => {
           )}
         </LinearGradient>
       </TouchableOpacity>
+      <StatusBar barStyle="dark-content" />
     </View>
   );
 };

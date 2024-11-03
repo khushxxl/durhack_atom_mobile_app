@@ -25,14 +25,15 @@ const ViewTickers = () => {
 
   const TicketComponent = ({ data }) => {
     console.log(data);
+
     const passPercentage = data?.data?.pass_percentage || 0;
-    const isPassed = passPercentage >= 70;
+    const isPassed = data?.data?.pass_fail_rating;
     const createdDate = data?.createdAt
       ? new Date(data.createdAt).toLocaleDateString()
       : "Date not available";
 
     return (
-      <View className="p-4 border border-gray-400 mx-3 rounded-xl mt-10">
+      <View className="p-4 border border-gray-400 mx-3 rounded-xl mt-10  bg-white shadow">
         <View className="flex-row justify-between items-center">
           <CustomText className="font-poppins-semibold text-lg">
             <View className="h-5 w-5 bg-blue-200 rounded-full mr-2" />{" "}
@@ -56,6 +57,7 @@ const ViewTickers = () => {
                   ticketSummary: JSON.stringify(data?.data?.summary),
                   ticketTranscript: JSON.stringify(data?.data?.transcript),
                   ticketPassPercentage: data?.data?.pass_percentage,
+                  audioURL: data?.audioURL,
                 },
               })
             }
@@ -64,7 +66,7 @@ const ViewTickers = () => {
           />
           <CustomText
             className={`mt-10 font-poppins-semibold ${
-              isPassed ? "text-green-500" : "text-red-500"
+              isPassed == "Pass" ? "text-green-500" : "text-red-500"
             }`}
           >
             Pass Percentage: {data?.data?.pass_percentage}
@@ -75,10 +77,10 @@ const ViewTickers = () => {
   };
 
   return (
-    <SafeAreaView className="flex flex-1">
+    <SafeAreaView className="flex flex-1 bg-white">
       <View className="mx-5 flex justify-between items-center flex-row">
         <CustomText className="font-poppins-semibold text-xl">
-          Your Tickets
+          Fin Wise
         </CustomText>
         <TouchableOpacity
           onPress={() => router.push("/screens/enter-ticket-details")}
@@ -145,8 +147,8 @@ const ViewTickers = () => {
 
       {activeTab === "tickets" ? (
         <ScrollView className="mt-5 gap-y-5">
-          {allTickets.map((ticket: any) => (
-            <TicketComponent key={ticket} data={ticket} />
+          {allTickets.map((ticket: any, i: number) => (
+            <TicketComponent key={i} data={ticket} />
           ))}
         </ScrollView>
       ) : (
@@ -157,7 +159,7 @@ const ViewTickers = () => {
         </View>
       )}
 
-      <StatusBar />
+      <StatusBar barStyle="dark-content" />
     </SafeAreaView>
   );
 };

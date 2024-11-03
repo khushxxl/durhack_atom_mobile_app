@@ -4,6 +4,8 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import CustomText from "@/ui/CustomText";
@@ -23,8 +25,7 @@ const ViewReport = () => {
     ticketSummary: JSON.parse(params.ticketSummary as string),
     ticketTranscript: JSON.parse(params.ticketTranscript as string),
     ticketPassPercentage: params.ticketPassPercentage,
-    audio:
-      "https://drive.google.com/uc?export=download&id=1Z5XwKQ3G78kPND6Lw4vF9LOc1SRudFwQ",
+    audio: params?.audioURL as string,
   };
 
   const [activeTab, setActiveTab] = useState("summary");
@@ -152,6 +153,34 @@ const ViewReport = () => {
             }}
           >
             No audio recording available
+          </CustomText>
+        </View>
+      );
+    }
+
+    if (isLoading) {
+      return (
+        <View
+          style={{
+            backgroundColor: "#f8f9fa",
+            borderRadius: 12,
+            padding: 16,
+            marginHorizontal: 20,
+            marginTop: 16,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="#000000" />
+          <CustomText
+            style={{
+              fontSize: 16,
+              fontFamily: "Poppins-Medium",
+              color: "#636e72",
+              marginTop: 8,
+            }}
+          >
+            Loading audio...
           </CustomText>
         </View>
       );
@@ -461,6 +490,7 @@ const ViewReport = () => {
         )}
         {renderAudioPlayer()}
       </View>
+      <StatusBar barStyle="dark-content" />
     </SafeAreaView>
   );
 };
