@@ -75,7 +75,7 @@ const ViewTickers = () => {
   };
 
   return (
-    <SafeAreaView className="flex flex-1">
+    <SafeAreaView className="flex flex-1 bg-white">
       <View className="mx-5 flex justify-between items-center flex-row">
         <CustomText className="font-poppins-semibold text-xl">
           Your Tickets
