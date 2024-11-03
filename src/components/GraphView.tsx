@@ -74,6 +74,9 @@ const GraphView = ({ data }) => {
     },
   ];
 
+  // Check if advisor passed
+  const isPassed = data[0]?.data?.pass_fail_rating;
+
   return (
     <ScrollView className="flex-1 p-2.5">
       {/* Customer vs Advisor Winning Chart */}
