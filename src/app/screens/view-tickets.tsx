@@ -47,7 +47,7 @@ const ViewTickers = () => {
           }}
           className={` bg-black mt-10   max-w-[200px] text-sm rounded-lg p-3`}
         >
-          <CustomText className="text-white text-center  font-poppins-semibold">
+          <CustomText className="text-white text-center font-poppins-semibold">
             View Report
           </CustomText>
         </Link>
