@@ -10,13 +10,23 @@ export const AppProvider = ({ children }) => {
       data: {
         pass_percentage: "Pass",
         summary: {
-          adviser_main_points:
-            "Adviser reassures customer's concerns, suggests reviewing market value and costs, aligning with financial goals. Offers options and support in decision-making and securing the investment.",
+          advisor_main_points:
+            "Advisor reassures customer's concerns, suggests reviewing market value and costs, aligning with financial goals. Offers options and support in decision-making and securing the investment.",
           customer_main_points:
             "Customer is uneasy about their real estate investment due to market fluctuations, considering selling or holding. Feels overwhelmed as it is a significant part of their portfolio.",
-          favorable_to: "adviser",
+          favorable_to: "customer",
           tone_analysis:
-            "Both parties maintain a supportive and reassuring tone throughout the conversation, with the adviser offering guidance and empathy towards the customer's concerns.",
+            "Throughout the conversation, the tone exhibited a complex interplay of emotions and professional conduct. The customer's tone initially reflected anxiety and uncertainty, evidenced by their use of phrases expressing unease and overwhelm regarding their real estate investment. Their vocal patterns showed signs of stress when discussing market fluctuations and portfolio concentration. However, as the conversation progressed, their tone gradually shifted towards cautious optimism, particularly when receiving reassurance and structured guidance from the adviser. The adviser maintained a consistently calm, empathetic, and professional tone throughout the interaction. Their voice carried authority without being domineering, effectively balancing emotional support with practical guidance. The adviser's tone was particularly effective in moments of validation, using phrases like 'completely normal' and 'valid concern' to create a safe space for discussion. The overall tone evolved from one of anxiety to collaborative problem-solving, with both parties engaging in constructive dialogue. The adviser's measured responses and the customer's gradual relaxation in tone created a harmonious dynamic that facilitated productive discussion of complex financial decisions.",
+          voice_biometrics: {
+            stress_detected: true,
+            breather_suggestion:
+              "Consider pausing for a brief relaxation exercise when discussing portfolio concentration to reduce anxiety levels.",
+          },
+          bias_detector: {
+            customer_bias: "Recency Bias",
+            advisor_suggestion:
+              "Frame discussion around long-term market patterns and historical recovery trends to help balance recent market concerns with broader perspective.",
+          },
         },
         transcript: [
           {

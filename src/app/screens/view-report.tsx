@@ -9,6 +9,12 @@ import React, { useEffect, useRef, useState } from "react";
 import CustomText from "@/ui/CustomText";
 import { useLocalSearchParams } from "expo-router";
 import { Audio } from "expo-av";
+import { MaterialIcons } from "@expo/vector-icons";
+
+const PlayIcon = () => (
+  <MaterialIcons name="play-arrow" size={24} color="white" />
+);
+const PauseIcon = () => <MaterialIcons name="pause" size={24} color="white" />;
 
 const ViewReport = () => {
   const params = useLocalSearchParams();
@@ -180,7 +186,7 @@ const ViewReport = () => {
           <CustomText
             style={{
               fontSize: 16,
-              fontFamily: "Poppins-Medium",
+
               color: "#2d3436",
             }}
           >
@@ -209,7 +215,7 @@ const ViewReport = () => {
             style={{
               width: `${(currentTime / duration) * 100}%`,
               height: "100%",
-              backgroundColor: "#6c5ce7",
+              backgroundColor: "#000000",
               borderRadius: 4,
             }}
           />
@@ -228,13 +234,13 @@ const ViewReport = () => {
               width: 40,
               height: 40,
               borderRadius: 20,
-              backgroundColor: "#6c5ce7",
+              backgroundColor: "#000000",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
             <Text style={{ color: "white", fontSize: 16 }}>
-              {isPlaying ? "⏸" : "▶"}
+              {isPlaying ? <PauseIcon /> : <PlayIcon />}
             </Text>
           </TouchableOpacity>
         </View>
@@ -300,37 +306,115 @@ const ViewReport = () => {
           </CustomText>
         </TouchableOpacity>
       </View>
-      <View style={{ flex: 1, padding: 20 }}>
+      <View className="" style={{ flex: 1, padding: 20 }}>
         {activeTab === "summary" ? (
           <View
+            className=""
             style={{
               backgroundColor: "white",
               borderRadius: 10,
-              padding: 16,
+              paddingRight: 16,
+              paddingLeft: 16,
               shadowOpacity: 0.1,
               shadowRadius: 5,
+              maxHeight: 500,
+              paddingTop: 10,
             }}
           >
-            <CustomText style={{ fontSize: 18, marginBottom: 12 }}>
-              Adviser Main Points:
-            </CustomText>
-            <Text style={{ color: "black", fontSize: 16, marginBottom: 16 }}>
-              {ticketData.ticketSummary.adviser_main_points}
-            </Text>
+            <ScrollView>
+              <CustomText
+                className="font-poppins-semibold"
+                style={{ fontSize: 18, marginBottom: 12 }}
+              >
+                Advisor Main Points:
+              </CustomText>
+              <CustomText
+                style={{ color: "black", fontSize: 16, marginBottom: 16 }}
+              >
+                {ticketData.ticketSummary.advisor_main_points}
+              </CustomText>
 
-            <CustomText style={{ fontSize: 18, marginBottom: 12 }}>
-              Customer Main Points:
-            </CustomText>
-            <Text style={{ color: "black", fontSize: 16, marginBottom: 16 }}>
-              {ticketData.ticketSummary.customer_main_points}
-            </Text>
+              <CustomText
+                className="font-poppins-semibold"
+                style={{ fontSize: 18, marginBottom: 12 }}
+              >
+                Customer Main Points:
+              </CustomText>
+              <CustomText
+                style={{ color: "black", fontSize: 16, marginBottom: 16 }}
+              >
+                {ticketData.ticketSummary.customer_main_points}
+              </CustomText>
 
-            <CustomText style={{ fontSize: 18, marginBottom: 12 }}>
-              Tone Analysis:
-            </CustomText>
-            <Text style={{ color: "black", fontSize: 16 }}>
-              {ticketData.ticketSummary.tone_analysis}
-            </Text>
+              <CustomText
+                className="font-poppins-semibold"
+                style={{ fontSize: 18, marginBottom: 12 }}
+              >
+                Tone Analysis:
+              </CustomText>
+              <CustomText
+                style={{ color: "black", fontSize: 16, marginBottom: 16 }}
+              >
+                {ticketData.ticketSummary.tone_analysis}
+              </CustomText>
+
+              {ticketData.ticketSummary?.voice_biometrics?.stress_detected && (
+                <>
+                  <CustomText
+                    className="font-poppins-semibold"
+                    style={{ fontSize: 18, marginBottom: 12 }}
+                  >
+                    Stress Detection:
+                  </CustomText>
+                  <CustomText
+                    style={{ color: "#ff4444", fontSize: 16, marginBottom: 8 }}
+                  >
+                    Stress detected in conversation
+                  </CustomText>
+                  <CustomText
+                    style={{ color: "black", fontSize: 16, marginBottom: 16 }}
+                  >
+                    Suggested breather:{" "}
+                    {
+                      ticketData.ticketSummary?.voice_biometrics
+                        ?.breather_suggestion
+                    }
+                  </CustomText>
+                </>
+              )}
+
+              <CustomText
+                className="font-poppins-semibold"
+                style={{ fontSize: 18, marginBottom: 12 }}
+              >
+                Bias Analysis:
+              </CustomText>
+              <CustomText
+                style={{ color: "black", fontSize: 16, marginBottom: 8 }}
+              >
+                Detected Bias:{" "}
+                {ticketData.ticketSummary?.bias_detector?.customer_bias}
+              </CustomText>
+              <CustomText
+                style={{ color: "black", fontSize: 16, marginBottom: 16 }}
+              >
+                Suggestion:{" "}
+                {ticketData.ticketSummary?.bias_detector?.advisor_suggestion}
+              </CustomText>
+
+              <CustomText
+                className="font-poppins-semibold"
+                style={{ fontSize: 18, marginBottom: 12 }}
+              >
+                Conclusion:
+              </CustomText>
+              <CustomText
+                style={{ color: "black", fontSize: 16, marginBottom: 16 }}
+              >
+                The AI analysis indicates the conversation was favorable to the{" "}
+                {ticketData.ticketSummary?.favorable_to}.
+              </CustomText>
+            </ScrollView>
           </View>
         ) : (
           <View
@@ -346,6 +430,7 @@ const ViewReport = () => {
               shadowRadius: 8,
               elevation: 8,
               flex: 1,
+              maxHeight: 500,
             }}
           >
             <ScrollView
