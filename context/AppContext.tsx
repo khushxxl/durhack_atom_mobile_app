@@ -8,7 +8,7 @@ export const AppProvider = ({ children }) => {
       ticketName: "Ticket 01",
       ticketDescription: "Test desc",
       data: {
-        pass_percentage: "Pass",
+        pass_percentage: "30%",
         summary: {
           advisor_main_points:
             "Advisor reassures customer's concerns, suggests reviewing market value and costs, aligning with financial goals. Offers options and support in decision-making and securing the investment.",
