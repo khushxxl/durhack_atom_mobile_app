@@ -25,32 +25,51 @@ const ViewTickers = () => {
 
   const TicketComponent = ({ data }) => {
     console.log(data);
+    const passPercentage = data?.data?.pass_percentage || 0;
+    const isPassed = passPercentage >= 70;
+    const createdDate = data?.createdAt
+      ? new Date(data.createdAt).toLocaleDateString()
+      : "Date not available";
+
     return (
       <View className="p-4 border border-gray-400 mx-3 rounded-xl mt-10">
-        <CustomText className="font-poppins-semibold text-lg">
-          <View className="h-5 w-5 bg-blue-200 rounded-full mr-2" />{" "}
-          {data?.ticketName}
-        </CustomText>
+        <View className="flex-row justify-between items-center">
+          <CustomText className="font-poppins-semibold text-lg">
+            <View className="h-5 w-5 bg-blue-200 rounded-full mr-2" />{" "}
+            {data?.ticketName}
+          </CustomText>
+          <CustomText className="text-sm text-gray-500">
+            {createdDate}
+          </CustomText>
+        </View>
         <CustomText className="text-lg mt-3">
           {data?.ticketDescription}
         </CustomText>
-        <Link
-          href={{
-            pathname: "/screens/view-report",
-            params: {
-              ticketName: data?.ticketName,
-              ticketDescription: data?.ticketDescription,
-              ticketSummary: JSON.stringify(data?.data?.summary),
-              ticketTranscript: JSON.stringify(data?.data?.transcript),
-              ticketPassPercentage: data?.data?.pass_percentage,
-            },
-          }}
-          className={` bg-black mt-10   max-w-[200px] text-sm rounded-lg p-3`}
-        >
-          <CustomText className="text-white text-center font-poppins-semibold">
-            View Report
+        <View className="flex-row justify-between items-center mt-4">
+          <CustomButton
+            onPress={() =>
+              router.push({
+                pathname: "/screens/view-report",
+                params: {
+                  ticketName: data?.ticketName,
+                  ticketDescription: data?.ticketDescription,
+                  ticketSummary: JSON.stringify(data?.data?.summary),
+                  ticketTranscript: JSON.stringify(data?.data?.transcript),
+                  ticketPassPercentage: data?.data?.pass_percentage,
+                },
+              })
+            }
+            buttonText={"View Report"}
+            additionalClassName="max-w-[150px] flex-1"
+          />
+          <CustomText
+            className={`mt-10 font-poppins-semibold ${
+              isPassed ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            Pass Percentage: {data?.data?.pass_percentage}
           </CustomText>
-        </Link>
+        </View>
       </View>
     );
   };
