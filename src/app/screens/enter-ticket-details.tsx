@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import * as DocumentPicker from "expo-document-picker";
@@ -11,12 +12,16 @@ import { Audio } from "expo-av";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import { useAppContext } from "context/AppContext";
 
 const EnterTicketDetails = () => {
   const [audioFile, setAudioFile] = useState(null);
   const [sound, setSound] = useState(null);
   const [targetName, setTargetName] = useState("");
   const [description, setDescription] = useState(""); // Added description state
+  const [loading, setLoading] = useState(false); // Added loading state
+
+  const { allTickets, setallTickets } = useAppContext();
 
   useEffect(() => {
     (async () => {
@@ -68,25 +73,48 @@ const EnterTicketDetails = () => {
 
   const router = useRouter();
   const handleSubmit = async () => {
-    await fetch("http://localhost:8000/deepgram", {
+    setLoading(true); // Start loading
+    fetch("http://localhost:8000/deepgram", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       },
-
       body: JSON.stringify({
         url: "https://drive.google.com/uc?export=download&id=1Z5XwKQ3G78kPND6Lw4vF9LOc1SRudFwQ",
       }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-        router.back();
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        try {
+          const data = await response.json();
+
+          // Parse the embedded JSON in "ai_response"
+          const aiResponse = JSON.parse(data.data.ai_response);
+          console.log("Success:", aiResponse);
+          if (aiResponse) {
+            const newTicket = {
+              ticketName: targetName,
+              ticketDescription: description,
+              data: aiResponse,
+            };
+            setallTickets([...allTickets, newTicket]);
+            router.back();
+          }
+        } catch (error) {
+          console.error("Parsing error:", error);
+          setError("Failed to process the response data.");
+        }
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.error("Error:", error.message);
         setError("Failed to submit. Please try again.");
+      })
+      .finally(() => {
+        setLoading(false); // Stop loading
       });
 
     console.log("Submitting:", { targetName, description, audioFile });
@@ -167,12 +195,20 @@ const EnterTicketDetails = () => {
         multiline={true}
       />
 
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+      <TouchableOpacity
+        style={styles.submitButton}
+        onPress={handleSubmit}
+        disabled={loading}
+      >
         <LinearGradient
           colors={["#000000", "#000000"]}
           style={styles.submitGradient}
         >
-          <Text style={styles.submitButtonText}>Submit</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+            <Text style={styles.submitButtonText}>Submit</Text>
+          )}
         </LinearGradient>
       </TouchableOpacity>
     </View>
